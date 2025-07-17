@@ -20,10 +20,78 @@ const ContactUs = () => {
     message: "",
   });
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({
+    fName: "",
+    lName: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
+  });
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
+
+    // Clear error when user starts typing
+    if (errors[name as keyof typeof errors]) {
+      setErrors({ ...errors, [name]: "" });
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {
+      fName: "",
+      lName: "",
+      email: "",
+      phone: "",
+      subject: "",
+      message: "",
+    };
+
+    let isValid = true;
+
+    // Validate first name
+    if (!form.fName.trim()) {
+      newErrors.fName = "First name is required";
+      isValid = false;
+    }
+
+    // Validate last name
+    if (!form.lName.trim()) {
+      newErrors.lName = "Last name is required";
+      isValid = false;
+    }
+
+    // Validate email
+    if (!form.email.trim()) {
+      newErrors.email = "Email is required";
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(form.email)) {
+      newErrors.email = "Please enter a valid email";
+      isValid = false;
+    }
+
+    // Validate phone
+    if (!form.phone.trim()) {
+      newErrors.phone = "Phone number is required";
+      isValid = false;
+    }
+
+    // Validate subject
+    if (!form.subject) {
+      newErrors.subject = "Please select a subject";
+      isValid = false;
+    }
+
+    // Validate message
+    if (!form.message.trim()) {
+      newErrors.message = "Message is required";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
   };
 
   const handleWhatsAppClick = () => {
@@ -41,8 +109,15 @@ const ContactUs = () => {
   };
 
   const handleSubmit = (e: any) => {
-    console.log("Data is ", form);
     e.preventDefault();
+
+    // Validate form before submission
+    if (!validateForm()) {
+      alert("Please fill in all required fields correctly");
+      return;
+    }
+
+    console.log("Data is ", form);
     setLoading(true);
 
     emailjs
@@ -57,7 +132,7 @@ const ContactUs = () => {
           phone: form.phone,
           subject: form.subject,
           message: form.message,
-          // Optional: You can also create a formatted message that includes all details
+
           full_message: `
 Name: ${form.fName} ${form.lName}
 Email: ${form.email}
@@ -83,6 +158,14 @@ ${form.message}
             subject: "",
             message: "",
           });
+          setErrors({
+            fName: "",
+            lName: "",
+            email: "",
+            phone: "",
+            subject: "",
+            message: "",
+          });
         },
         (error: any) => {
           setLoading(false);
@@ -91,6 +174,7 @@ ${form.message}
         }
       );
   };
+
   return (
     <div className="h-screen sm:overflow-y-hidden">
       <Navbar isHome={false} />
@@ -174,55 +258,85 @@ ${form.message}
           <div className={`w-[90%] sm:w-[58%] flex flex-col gap-4`}>
             <div className="w-full font-medium flex justify-between items-center">
               <div className="flex w-[50%] flex-col gap-2">
-                <p>First Name</p>
+                <p>
+                  First Name <span className="text-red-500">*</span>
+                </p>
                 <input
                   type="text"
                   name="fName"
                   value={form?.fName}
                   onChange={handleChange}
                   placeholder="First Name"
-                  className="bg-tertiary  placeholder:text-secondary border-b border-slate-200   w-[90%] outline-none  font-medium"
+                  className={`bg-tertiary placeholder:text-secondary border-b ${
+                    errors.fName ? "border-red-500" : "border-slate-200"
+                  } w-[90%] outline-none font-medium`}
                 />
+                {errors.fName && (
+                  <span className="text-red-500 text-xs">{errors.fName}</span>
+                )}
               </div>
               <div className="flex w-[50%] flex-col gap-2">
-                <p>Last Name</p>
+                <p>
+                  Last Name <span className="text-red-500">*</span>
+                </p>
                 <input
                   type="text"
                   name="lName"
                   value={form?.lName}
                   onChange={handleChange}
                   placeholder="Last Name"
-                  className="bg-tertiary  placeholder:text-secondary border-b border-slate-200   w-[90%] outline-none  font-medium"
+                  className={`bg-tertiary placeholder:text-secondary border-b ${
+                    errors.lName ? "border-red-500" : "border-slate-200"
+                  } w-[90%] outline-none font-medium`}
                 />
+                {errors.lName && (
+                  <span className="text-red-500 text-xs">{errors.lName}</span>
+                )}
               </div>
             </div>
             <div className=" font-medium  w-full flex justify-between items-center">
               <div className="flex w-[50%] flex-col gap-2">
-                <p>Email</p>
+                <p>
+                  Email <span className="text-red-500">*</span>
+                </p>
                 <input
                   type="email"
                   name="email"
                   value={form?.email}
                   onChange={handleChange}
                   placeholder="Email"
-                  className="bg-tertiary  placeholder:text-secondary border-b border-slate-200   w-[90%] outline-none  font-medium"
+                  className={`bg-tertiary placeholder:text-secondary border-b ${
+                    errors.email ? "border-red-500" : "border-slate-200"
+                  } w-[90%] outline-none font-medium`}
                 />
+                {errors.email && (
+                  <span className="text-red-500 text-xs">{errors.email}</span>
+                )}
               </div>
               <div className="flex w-[50%] flex-col gap-2">
-                <p>Phone Number</p>
+                <p>
+                  Phone Number <span className="text-red-500">*</span>
+                </p>
                 <input
                   type="text"
                   name="phone"
                   value={form?.phone}
                   onChange={handleChange}
                   placeholder="Phone Number"
-                  className="bg-tertiary  placeholder:text-secondary border-b border-slate-200   w-[90%] outline-none  font-medium"
+                  className={`bg-tertiary placeholder:text-secondary border-b ${
+                    errors.phone ? "border-red-500" : "border-slate-200"
+                  } w-[90%] outline-none font-medium`}
                 />
+                {errors.phone && (
+                  <span className="text-red-500 text-xs">{errors.phone}</span>
+                )}
               </div>
             </div>
 
-            <div className="   flex w-full flex-col gap-2">
-              <p className="font-medium">Select Subject</p>
+            <div className="flex w-full flex-col gap-2">
+              <p className="font-medium">
+                Select Subject <span className="text-red-500">*</span>
+              </p>
               <div className="w-full flex gap-3 flex-wrap sm:gap-5">
                 <label className="flex gap-2">
                   <input
@@ -255,21 +369,32 @@ ${form.message}
                   Others
                 </label>
               </div>
+              {errors.subject && (
+                <span className="text-red-500 text-xs">{errors.subject}</span>
+              )}
             </div>
             <div className=" font-medium  flex w-full flex-col gap-2">
-              <p>Message</p>
+              <p>
+                Message <span className="text-red-500">*</span>
+              </p>
               <textarea
                 rows={7}
                 name="message"
                 value={form?.message}
                 onChange={handleChange}
                 placeholder="Write your message here"
-                className="bg-tertiary p-3 rounded-lg placeholder:text-secondary border border-slate-200   w-[90%] outline-none  font-medium"
+                className={`bg-tertiary p-3 rounded-lg placeholder:text-secondary border ${
+                  errors.message ? "border-red-500" : "border-slate-200"
+                } w-[90%] outline-none font-medium`}
               />
+              {errors.message && (
+                <span className="text-red-500 text-xs">{errors.message}</span>
+              )}
             </div>
             <button
-              className="py-2 px-4 rounded-lg w-[50%] bg-primary text-white"
+              className="py-2 px-4 rounded-lg w-[50%] bg-primary text-white hover:bg-primary/90 transition-colors"
               onClick={handleSubmit}
+              disabled={loading}
             >
               {loading ? "Sending Message..." : "Send Message"}
             </button>

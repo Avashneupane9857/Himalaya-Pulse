@@ -26,7 +26,7 @@ interface ImageTransitionProps {
 
 // Constants
 const TRANSITION_INTERVAL = 2000; // 3 seconds
-const TRANSITION_DURATION = 0.8;
+const TRANSITION_DURATION = 0.8; 
 
 const products: Product[] = [
   {
