@@ -86,7 +86,6 @@ const Gallery: React.FC<ImageGalleryProps> = ({
   return (
     <div className={`min-h-screen bg-gray-50 ${className}`}>
       <Navbar isHome={false} />
-
       <div className="pt-20 pb-16">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
@@ -154,14 +153,6 @@ const Gallery: React.FC<ImageGalleryProps> = ({
                 <h1 className="text-5xl font-bold text-gray-800 mb-6">
                   Gallery
                 </h1>
-                <p className="text-lg text-gray-600 leading-relaxed max-w-2xl">
-                  Explore our collection of stunning visuals capturing the
-                  essence of our work and journey. Each image tells a story of
-                  dedication, quality, and the beautiful landscapes of Nepal.
-                  From our state-of-the-art facilities to the natural beauty
-                  that inspires our products, discover the visual narrative
-                  behind Himalaya Pulse.
-                </p>
               </div>
 
               {/* Image Counter */}
@@ -205,7 +196,6 @@ const Gallery: React.FC<ImageGalleryProps> = ({
           </div>
         </div>
       </div>
-
       <Footer />
     </div>
   );
